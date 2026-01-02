@@ -1,0 +1,349 @@
+/* --- 1. CORE VARIABLES & RESET --- */
+:root {
+    --bg-color: #02020e;
+    --primary-purple: #7c3aed;
+    --secondary-pink: #d946ef;
+    --text-white: #ffffff;
+    --text-gray: #9ca3af;
+    --nav-bg: rgba(2, 2, 14, 0.95);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-white);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* --- 2. CANVAS LAYERS --- */
+
+/* Background Wave Canvas - Now clearer */
+#waveCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 1; /* Fully opaque canvas, we control particle alpha in JS */
+    pointer-events: none;
+}
+
+/* Robot Energy Cluster Canvas */
+#clusterCanvas {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* --- 3. NAVIGATION BAR --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    background: rgba(2, 2, 14, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, #a78bfa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    z-index: 102;
+    cursor: pointer;
+}
+
+/* DESKTOP MENU: CENTERED */
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.nav-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--text-white);
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* RIGHT SIDE BUTTONS */
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    z-index: 102;
+}
+
+/* Sign Up Button: Transparent default, White on Hover */
+.btn-signup {
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-signup:hover {
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary-small {
+    background: var(--primary-purple);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-primary-small:hover {
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
+    transform: translateY(-1px);
+}
+
+/* HAMBURGER (Mobile Only) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 103;
+    padding: 5px;
+}
+.bar {
+    width: 26px;
+    height: 2px;
+    background-color: var(--text-white);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+/* --- 4. HERO SECTION --- */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+    padding: 80px 5% 40px;
+    position: relative;
+    z-index: 5;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 600px;
+    animation: fadeUp 1s ease-out;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.hero-content p {
+    color: var(--text-gray);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 35px;
+    max-width: 500px;
+}
+
+.cta-group {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-large {
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-fill {
+    background: linear-gradient(135deg, var(--primary-purple), var(--secondary-pink));
+    color: white;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+}
+
+.btn-fill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+/* --- 5. ROBOT SECTION --- */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    animation: fadeIn 1.5s ease-out;
+}
+
+.robot-container {
+    position: relative;
+    width: 450px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+/* Glow Behind Robot */
+.glow-backing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.4), transparent 70%);
+    filter: blur(40px);
+    z-index: -2;
+    transition: all 0.5s ease;
+    animation: pulse 3s infinite ease-in-out;
+}
+
+/* ROBOT HOVER: Intensify Glow */
+.robot-container:hover .glow-backing {
+    width: 95%;
+    height: 95%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.8), transparent 70%);
+    filter: blur(60px);
+    animation: none;
+    opacity: 1;
+}
+
+.robot-img {
+    width: 100%;
+    height: auto;
+    animation: float 5s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.2));
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* --- 6. ANIMATIONS & RESPONSIVE --- */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 968px) {
+    .hamburger { display: flex; }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        left: auto;
+        transform: none;
+        width: 100%;
+        height: 100vh;
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 100;
+    }
+
+    .nav-links.active { right: 0; }
+    .nav-links li { margin: 15px 0; }
+    .nav-links a { font-size: 1.5rem; font-weight: 600; }
+
+    .auth-buttons { margin-right: 40px; }
+
+    .hamburger.active .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+    .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+        padding-top: 120px;
+        gap: 50px;
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-content h1 { font-size: 2.5rem; }
+    .robot-container { width: 300px; }
+    #clusterCanvas { width: 250px; height: 250px; bottom: -30px; }
+    
+    /* Disable hover intensity on touch */
+    .robot-container:hover .glow-backing { width: 70%; opacity: 0.5; }
+}
+
+@media (max-width: 480px) {
+     .auth-buttons { display: none; }
+}
